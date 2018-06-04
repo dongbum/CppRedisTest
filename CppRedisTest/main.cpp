@@ -21,6 +21,27 @@ int main(void)
 	if (true == client.is_connected())
 	{
 		std::cout << "Connected Succeed!!!" << std::endl;
+
+		while (true)
+		{
+			// data insert
+			client.set("key_1", "value_aaaa");
+			client.set("key_2", "value_bbbb");
+
+			// sync
+			client.sync_commit();
+
+			// data get
+			client.get("key_1", [](cpp_redis::reply& reply) {
+				std::cout << reply << std::endl;
+			});
+
+			// sync
+			client.sync_commit();
+
+			Sleep(2000);
+		}
+
 		client.disconnect();
 
 		if (false == client.is_connected())
