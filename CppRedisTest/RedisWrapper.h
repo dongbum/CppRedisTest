@@ -12,6 +12,13 @@
 class RedisWrapper
 {
 public:
+	enum RedisReturnType
+	{
+		REDIS_ERROR = 0,
+		REDIS_
+	};
+
+public:
 	RedisWrapper(void);
 	virtual ~RedisWrapper(void);
 
@@ -19,9 +26,12 @@ public:
 	bool Connect(std::string server_ip, unsigned short server_port = 6379);
 	void DisConnect(void);
 
-	void Set(std::string key, std::string value);
+	template<typename T>void Set(const std::string key, const T value);
+
 	bool Get(std::string key, OUT std::string& value);
 
 private:
 	cpp_redis::client	client_;
 };
+
+

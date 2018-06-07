@@ -1,10 +1,12 @@
 #include <iostream>
 #include <thread>
 
-
+#include "RedisWrapper.h"
 
 int main(void)
 {
+	
+
 	static auto InputFunction = []()
 	{
 		while (true)
@@ -16,45 +18,16 @@ int main(void)
 		};
 	};
 
+	std::thread input_thread = std::thread(InputFunction);
+
+	RedisWrapper redis;
+	redis.Init();
+	if (false == redis.Connect("127.0.0.1"))
+		return -1;
+
+	redis.DisConnect();
 	
-
-	
-	
-
-	
-
-		std::thread input_thread = std::thread(InputFunction);
-		// input_thread.join();
-
-		while (true)
-		{
-			/*
-			// data insert
-			client.set("key_1", "value_aaaa");
-			client.set("key_2", "value_bbbb");
-
-			// sync
-			client.sync_commit();
-
-			// data get
-			client.get("key_1", [](cpp_redis::reply& reply) {
-				std::cout << reply << std::endl;
-			});
-			*/
-
-			// sync
-			client.sync_commit();
-			std::cout << "sync_commit()" << std::endl;
-
-			Sleep(2000);
-		}
-
-		
-	}
-	else
-	{
-		std::cout << "Connected Failed!!!" << std::endl;
-	}
+	input_thread.join();
 	
 	return 0;
 }

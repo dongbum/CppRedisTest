@@ -1,23 +1,23 @@
 #include "RedisWrapper.h"
 
 RedisWrapper::RedisWrapper(void)
+	: client_()
 {
-	
-}
 
-RedisWrapper::~RedisWrapper(void)
-{
-}
-
-bool RedisWrapper::Init(void)
-{
 	WORD version = MAKEWORD(2, 2);
 	WSADATA data;
 	if (WSAStartup(version, &data) != 0) {
 		std::cerr << "WSAStartup() failure" << std::endl;
-		return false;
 	}
+}
 
+RedisWrapper::~RedisWrapper(void)
+{
+	WSACleanup();
+}
+
+bool RedisWrapper::Init(void)
+{
 	return true;
 }
 
@@ -46,16 +46,22 @@ void RedisWrapper::DisConnect(void)
 	}
 }
 
-void RedisWrapper::Set(std::string key, std::string value)
+template<typename T>
+inline void RedisWrapper::Set(const std::string key, const T value)
 {
-	client_.set(key, value);
+	client_.set(key, std::string(value));
 	client_.sync_commit();
 }
 
 bool RedisWrapper::Get(std::string key, OUT std::string& value)
 {
-	std::future<cpp_redis::reply> reply = client_.get(key);
-	value = reply.get().as_string();
+	cpp_redis::reply reply = client_.get(key).get();
+
+	if (reply.is_error())
+	{
+		std::cout << "Data Error!!!" << std::endl;
+		return false;
+	}
 
 	/*
 	client_.get(key, [](cpp_redis::reply& reply) {
