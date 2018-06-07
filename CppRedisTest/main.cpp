@@ -1,29 +1,34 @@
 #include <iostream>
+#include <thread>
 
-#ifdef _WIN32
-#include <Winsock2.h>
-#endif
 
-#include <cpp_redis/cpp_redis>
 
 int main(void)
 {
-	WORD version = MAKEWORD(2, 2);
-	WSADATA data;
-	if (WSAStartup(version, &data) != 0) {
-		std::cerr << "WSAStartup() failure" << std::endl;
-		return -1;
-	}
-
-	cpp_redis::client client;
-	client.connect("127.0.0.1", 6379);
-
-	if (true == client.is_connected())
+	static auto InputFunction = []()
 	{
-		std::cout << "Connected Succeed!!!" << std::endl;
+		while (true)
+		{
+			std::string input_msg = "";
+			std::getline(std::cin, input_msg);
+
+			std::cout << "InputMsg : " << input_msg << std::endl;
+		};
+	};
+
+	
+
+	
+	
+
+	
+
+		std::thread input_thread = std::thread(InputFunction);
+		// input_thread.join();
 
 		while (true)
 		{
+			/*
 			// data insert
 			client.set("key_1", "value_aaaa");
 			client.set("key_2", "value_bbbb");
@@ -35,19 +40,16 @@ int main(void)
 			client.get("key_1", [](cpp_redis::reply& reply) {
 				std::cout << reply << std::endl;
 			});
+			*/
 
 			// sync
 			client.sync_commit();
+			std::cout << "sync_commit()" << std::endl;
 
 			Sleep(2000);
 		}
 
-		client.disconnect();
-
-		if (false == client.is_connected())
-		{
-			std::cout << "Connected disconnected!!!" << std::endl;
-		}
+		
 	}
 	else
 	{
