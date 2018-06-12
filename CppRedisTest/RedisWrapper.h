@@ -9,6 +9,14 @@
 
 #define OUT
 
+#define INIT_CPP_REDIS() WORD version = MAKEWORD(2, 2); \
+WSADATA data; \
+if (WSAStartup(version, &data) != 0) { \
+	std::cerr << "WSAStartup() failure" << std::endl; \
+}
+
+#define CLEAR_CPP_REDIS() WSACleanup();
+
 class RedisWrapper
 {
 public:
