@@ -5,7 +5,14 @@
 
 int main(void)
 {
-	
+	// 윈속 초기화
+	// tacopie 시스템상 client가 호출되기전 무조건 호출되어야 함.
+	WORD version = MAKEWORD(2, 2);
+	WSADATA data;
+	if (WSAStartup(version, &data) != 0) {
+		std::cerr << "WSAStartup() failure" << std::endl;
+	}
+	//
 
 	static auto InputFunction = []()
 	{
@@ -28,6 +35,8 @@ int main(void)
 	redis.DisConnect();
 	
 	input_thread.join();
+
+	WSACleanup();	// tacopie 시스템상 제일 마지막에 호출 필요.
 	
 	return 0;
 }

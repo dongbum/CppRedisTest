@@ -1,14 +1,8 @@
 #include "RedisWrapper.h"
 
 RedisWrapper::RedisWrapper(void)
-	: client_()
 {
-
-	WORD version = MAKEWORD(2, 2);
-	WSADATA data;
-	if (WSAStartup(version, &data) != 0) {
-		std::cerr << "WSAStartup() failure" << std::endl;
-	}
+	
 }
 
 RedisWrapper::~RedisWrapper(void)
